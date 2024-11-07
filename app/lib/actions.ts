@@ -6,6 +6,7 @@ import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
+import { error } from 'console';
  
 const InvoiceSchema = z.object({
   id: z.string(),
@@ -61,7 +62,7 @@ export async function createInvoice(prevState: State, formData: FormData) {
       await sql`
         INSERT INTO invoices (customer_id, amount, status, date)
         VALUES (${customerId}, ${amountInCents}, ${status}, ${date})`;
-    } catch (error) {
+    } catch {
       return {
         message: 'Database Error: Failed to Create Invoice.',
       };
@@ -108,7 +109,7 @@ export async function updateInvoice(
       SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
       WHERE id = ${id}
     `;
-  } catch (error) {
+  } catch  {
     return { message: 'Database Error: Failed to Update Invoice.' };
   }
   // Revalidate the cache for the invoices page and redirect the user.
@@ -121,7 +122,7 @@ export async function deleteInvoice(id: string) {
   try {
     await sql`DELETE FROM invoices WHERE id = ${id}`;
     revalidatePath('/dashboard/invoices');
-  } catch (error) {
+  } catch {
     return { message: 'Database Error: Failed to Delete Invoice.' };
   }
 }
@@ -133,8 +134,8 @@ export async function authenticate(
 ) {
   try {
     await signIn('credentials', Object.fromEntries(formData));
-  } catch (error) {
-    if ((error as Error).message.includes('CredentialsSignin')) {
+  } catch  {
+    if ((error as unknown as Error).message.includes('CredentialsSignin')) {
       return 'CredentialSignin';
     }
     throw error;
