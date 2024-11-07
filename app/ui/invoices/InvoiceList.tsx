@@ -1,7 +1,7 @@
 // app/invoices/ui/InvoiceList.tsx
 'use client'; // This makes sure the component is a Client Component
 
-import { DeleteInvoice } from './DeleteInvoice'; // Adjust the path if needed
+//import { DeleteInvoice } from './DeleteInvoice'; // Adjust the path if needed
 import { InvoiceForm } from '@/app/lib/definitions'; // Adjust based on your definitions
 
 type InvoiceListProps = {
